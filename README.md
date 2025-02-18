@@ -1,5 +1,6 @@
 # news-slider
 **Visit at https://news-slider.onrender.com/**
+
 a hobby-project; creating a website/app that will allow to user to view various news sources based on their political leanings.
 
 You will need to make your own API key in https://newsapi.org/ and save it to a .env file in the project directory. In the .env file, you should write 
