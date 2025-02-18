@@ -1,6 +1,6 @@
 # app.py
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from models import db, NewsSource, Headline
 
 def create_app():
@@ -25,7 +25,7 @@ def create_app():
 
     @app.route('/')
     def home():
-        return "Welcome to your News App!"
+        return render_template('index.html')
     
     @app.route('/add_source', methods=['POST'])
     def add_source():
