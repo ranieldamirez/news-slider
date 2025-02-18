@@ -99,10 +99,11 @@ def create_app():
 
 # This runs the Flask app if we do "python app.py"
 if __name__ == '__main__':
-    # Call the factory function
+    import os
+    port = int(os.environ.get('PORT', 5000))
     app = create_app()
-    # Start in debug mode
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=port) # for Render deployment
+
 
 
     
