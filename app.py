@@ -97,11 +97,12 @@ def create_app():
         return jsonify(results)
     return app
 
+app = create_app() # Expose app at Module level for Render/Gunicorn
+
 # This runs the Flask app if we do "python app.py"
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
-    app = create_app()
     app.run(debug=True, host='0.0.0.0', port=port) # for Render deployment
 
 
