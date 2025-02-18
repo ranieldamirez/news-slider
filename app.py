@@ -1,108 +1,108 @@
 # app.py
 
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 from models import db, NewsSource, Headline
 
 def create_app():
-    # Create a Flask instance
+    """
+    A factory function that creates our Flask app, configures the DB, and defines our endpoints (routes).
+    """
     app = Flask(__name__)
 
-    # Configure the database URI:
-    # For quick demos, use an SQLite file called "news.db" in this folder.
-    # You can switch to PostgreSQL/MySQL by changing this line.
+    # 1) Tell Flask-SQLAlchemy which database to use.
+    # Here, we use a SQLite file called 'news.db'.
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///news.db'
-
-    # Disable event system overhead
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Initialize SQLAlchemy with our app configuration
+    # 2) Initialize SQLAlchemy with the Flask app's settings
     db.init_app(app)
 
-    # Create tables if they don't exist
+    # 3) Create all database tables if they don't already exist
     with app.app_context():
         db.create_all()
+    
+    # 4) Define routes
 
+    @app.route('/')
+    def home():
+        return "Welcome to your News App!"
+    
     @app.route('/add_source', methods=['POST'])
     def add_source():
         """
-        Add a new news source with a given bias score.
-        Expects a JSON payload, e.g.:
-        {
-            "name": "CNN",
-            "bias_score": -5
-        }
+        Add a new news source.
+        Expects JSON: {"name": "CNN", "bias_score": -5}
         """
-        data = request.get_json()       # Parse JSON request body
-        name = data.get('name')        # Extract "name" field from JSON
-        bias_score = data.get('bias_score')  # Extract "bias_score" field
 
-        # Create a new NewsSource object
-        new_source = NewsSource(name=name, bias_score=bias_score)
-        # Add it to the database session
-        db.session.add(new_source)
-        # Commit changes (inserts the row into the "news_sources" table)
-        db.session.commit()
+        data = request.get_json()
+        name = data.get('name')
+        bias = data.get('bias_score')
 
-        # Return a message including the ID of the newly inserted source
-        return jsonify({"message": f"Source '{name}' added.", "id": new_source.id}), 201
+        # Make a new NewsSource object
+        source = NewsSource(name=name, bias_score=bias)
 
+        db.session.add(source) # Stage it for insertion
+        db.session.commit() # Actually write to DB
+
+        return jsonify({"message": "Source added!", "id": source.id}), 201
+    
     @app.route('/add_headline', methods=['POST'])
     def add_headline():
         """
-        Add a new headline. Expects JSON:
-        {
-            "source_id": 1,
-            "title": "Breaking News",
-            "url": "https://cnn.com/breaking"
-        }
+        Add a new headline.
+        Expects JSON: {"source_id": 1, "title": "Some headline", "url": "https://..."}
         """
         data = request.get_json()
-        source_id = data.get('source_id')
+        s_id = data.get('source_id')
         title = data.get('title')
         url = data.get('url')
 
-        # Create a new Headline object
-        new_headline = Headline(source_id=source_id, title=title, url=url)
-        db.session.add(new_headline)
+        headline = Headline(source_id=s_id, title=title, url=url)
+        db.session.add(headline)
         db.session.commit()
 
-        return jsonify({"message": "Headline added.", "id": new_headline.id}), 201
+        return jsonify({"message": "Headline added!", "id": headline.id}), 201
+
 
     @app.route('/headlines', methods=['GET'])
     def get_headlines():
         """
-        Returns all headlines, or can filter by bias range if provided via query params, e.g.:
-        /headlines?min_bias=-5&max_bias=5
+        Returns a list of headlines (optionally filtered by a bias range).
+        Example query params:
+        /headlines?min_bias=5&max_bias=5
         """
-        # Use the provided query params or default to -10 / +10
-        min_bias = request.args.get('min_bias', -10, type=int)
-        max_bias = request.args.get('max_bias', 10, type=int)
 
-        # Query the Headline table, joined with the NewsSource table
-        # to filter by the source's bias score
+        # If no values provided, default to -10 / +10
+        min_bias = int(request.args.get('min_bias', -10))
+        max_bias = int(request.args.get('max_bias', 10))
+
+        # Query all headlines joined with their news source
+        # then filter by the source's bias_score
         query = db.session.query(Headline, NewsSource).join(NewsSource).filter(
             NewsSource.bias_score >= min_bias,
             NewsSource.bias_score <= max_bias
         )
 
-        # Collect the results into a list of dictionaries
         results = []
+
         for headline, source in query.all():
             results.append({
-                "id": headline.id,
+                "id":  headline.id,
                 "title": headline.title,
                 "url": headline.url,
-                "source": source.name,         # The name of the news source
+                "source_name": source.name,
                 "bias_score": source.bias_score
             })
 
-        # Return the list as JSON
         return jsonify(results)
-
     return app
 
-# Only run the Flask server if this file is executed directly (e.g. "python app.py")
-if __name__ == "__main__":
-    # Call create_app(), then run the app in debug mode on localhost:5000
+# This runs the Flask app if we do "python app.py"
+if __name__ == '__main__':
+    # Call the factory function
     app = create_app()
+    # Start in debug mode
     app.run(debug=True)
+
+
+    

@@ -5,11 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 # Create an instance of SQLAlchemy (this manages connections, models, etc.)
 db = SQLAlchemy()
 
-class NewsSource(db.Model):
+class NewsSource(db.Model): # Inheriting the db.Model class from SQLAlchemy
     """
     A table representing each news source (CNN, Fox, etc.)
     """
-    __tablename__ = 'news_sources'  # Explicitly name the table
+    __tablename__ = 'news_sources'  # Explicitly name the table in the DB. SQLAlchemy will look for this since we inherited db.Model
 
     # Primary key: a unique auto-incrementing integer
     id = db.Column(db.Integer, primary_key=True)
