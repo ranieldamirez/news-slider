@@ -6,7 +6,7 @@
 
 You will need to make your own API key in https://newsapi.org/ and save it to a .env file in the project directory. In the .env file, you should write 
 ``` .env
-"NEWSAPI_KEY=29b63e6b86fc4d4080df8724df911e59"
+"NEWSAPI_KEY=Insert_API_key_here"
 ```
 
 #### How to Run
