@@ -4,59 +4,113 @@
   <meta charset="UTF-8">
   <title>News Bias Aggregator</title>
   <style>
+    /* Base dark mode styles */
     body {
-      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #E0E0E0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    .container {
       max-width: 800px;
-      margin: 2em auto;
-      padding: 0 1em;
+      margin: 0 auto;
+      padding: 2rem 1rem;
     }
     h1 {
       text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
     }
+    /* Slider Container */
     #sliderContainer {
-      margin: 1em 0;
+      margin: 1rem 0;
       text-align: center;
     }
-    /* Fixed width for the classification container prevents layout shifts */
+    /* Fixed-width classification display */
     #sliderValue {
       display: inline-block;
-      width: 250px; /* Adjust as needed */
+      width: 300px;
       text-align: center;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
     }
-    .headline {
-      border: 1px solid #ccc;
-      padding: 1em;
-      margin-bottom: 1em;
-      border-radius: 4px;
+    /* Styling the slider */
+    input[type="range"] {
+      width: 80%;
+      margin: 0 auto;
+      -webkit-appearance: none;
+      background: transparent;
     }
-    .headline a {
-      color: #007BFF;
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 8px;
+      background: #333;
+      border-radius: 5px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #fff;
+      margin-top: -6px;
+      cursor: pointer;
+    }
+    /* Headline card style */
+    .headline-card {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .headline-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .card-subtitle {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .headline-card a {
+      color: #4A90E2;
       text-decoration: none;
+      font-weight: 500;
     }
-    .headline a:hover {
+    .headline-card a:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <h1>News Bias Aggregator</h1>
-  <body style="text-align: center;"><i>By: Daniel Ramirez</i></body>
-  <div id="sliderContainer">
-    <label for="biasSlider">Political Leaning:</label><br>
-    <!-- The slider input -->
-    <input type="range" id="biasSlider" min="-10" max="10" value="0" step="1">
-    <!-- Fixed width container for the classification label -->
-    <span id="sliderValue">Centrist / Minimal partisan</span>
+  <div class="container">
+    <h1>News Bias Aggregator</h1>
+    <div style="text-align: center;">
+      <i>By: Daniel Ramirez</i>
+    </div>
+    <div id="sliderContainer">
+      <label for="biasSlider">Political Leaning:</label><br>
+      <input type="range" id="biasSlider" min="-10" max="10" value="0" step="1">
+      <div id="sliderValue">Centrist / Minimal partisan</div>
+    </div>
+    <div id="headlines"></div>
   </div>
-  <div id="headlines"></div>
 
   <script>
     const slider = document.getElementById('biasSlider');
     const sliderValue = document.getElementById('sliderValue');
     const headlinesDiv = document.getElementById('headlines');
 
-    // Converts a numeric slider value into a political leaning label.
+    // Convert slider value into political classification.
     function getPoliticalClassification(value) {
       if (value >= -10 && value <= -6) {
           return "Strongly Left";
@@ -72,26 +126,24 @@
       return "";
     }
 
-    // Fetch headlines based on the slider's bias value.
+    // Fetch headlines from your Flask endpoint.
     function fetchHeadlines(bias) {
-      // Define a window of ±2 around the current slider value.
+      // Use a window of ±2 for filtering
       const min_bias = bias - 2;
       const max_bias = bias + 2;
-
-      // Call the Flask API endpoint.
       fetch(`/headlines?min_bias=${min_bias}&max_bias=${max_bias}`)
         .then(response => response.json())
         .then(data => {
           headlinesDiv.innerHTML = '';
           data.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'headline';
-            div.innerHTML = `
-              <strong>${item.title}</strong><br>
-              <em>${item.source_name} (Bias: ${item.bias_score})</em><br>
+            const card = document.createElement('div');
+            card.className = 'headline-card';
+            card.innerHTML = `
+              <div class="card-title">${item.title}</div>
+              <div class="card-subtitle">${item.source_name} (Bias: ${item.bias_score})</div>
               <a href="${item.url}" target="_blank">Read more</a>
             `;
-            headlinesDiv.appendChild(div);
+            headlinesDiv.appendChild(card);
           });
         })
         .catch(error => {
@@ -99,14 +151,14 @@
         });
     }
 
-    // When the slider value changes, update the classification text (which remains fixed) and fetch headlines.
+    // Update classification and headlines on slider change.
     slider.addEventListener('input', (e) => {
       const bias = parseInt(e.target.value);
       sliderValue.textContent = getPoliticalClassification(bias);
       fetchHeadlines(bias);
     });
 
-    // On page load, set the initial classification and fetch headlines.
+    // On page load, set initial classification and fetch headlines.
     window.onload = () => {
       const initialBias = parseInt(slider.value);
       sliderValue.textContent = getPoliticalClassification(initialBias);
