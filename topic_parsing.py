@@ -7,9 +7,13 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from models import Headline, NewsSource
 from models import db  # adjust import based on your project structure
+import nltk
+
+nltk.download('punkt', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('averaged_perceptron_tagger', quiet=True)
 
 bp = Blueprint('topic_parsing', __name__)
-
 
 
 STOPWORDS = set(stopwords.words('english'))
@@ -34,11 +38,6 @@ def extract_topics():
     and occur at least 3 times overall.
     Additionally, filter out common noise words.
     """
-    
-    import nltk
-    nltk.download('punkt', quiet=True)
-    nltk.download('stopwords', quiet=True)
-    nltk.download('averaged_perceptron_tagger_eng', quiet=True)
 
     
     headlines = Headline.query.all()
