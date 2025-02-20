@@ -8,52 +8,45 @@ import os
 import shutil
 import nltk
 
-# Use a writable directory for NLTK data
+# Configure a writable directory for NLTK data
 nltk_data_dir = '/tmp/nltk_data'
 os.makedirs(nltk_data_dir, exist_ok=True)
 os.environ['NLTK_DATA'] = nltk_data_dir
 if nltk_data_dir not in nltk.data.path:
     nltk.data.path.append(nltk_data_dir)
 
-# Download required resources into our directory.
+# Download required NLTK resources into that directory.
 nltk.download('punkt', quiet=True, download_dir=nltk_data_dir)
 nltk.download('stopwords', quiet=True, download_dir=nltk_data_dir)
 nltk.download('averaged_perceptron_tagger', quiet=True, download_dir=nltk_data_dir)
 
-# Workaround for the "punkt_tab" issue:
-# Find the directory where the English punkt data is located.
+# Workaround for "punkt_tab" resource:
 try:
-    # This should return something like /tmp/nltk_data/tokenizers/punkt/english.pickle
+    # Locate the English Punkt tokenizer file (e.g., english.pickle)
     english_pickle_path = nltk.data.find("tokenizers/punkt/english.pickle")
-    # Get the directory containing the pickle (should be .../punkt/)
+    # Get the directory where it is stored (should be .../punkt/)
     punkt_dir = os.path.dirname(english_pickle_path)
-    # Define the expected directory for 'punkt_tab'
+    
+    # Define the expected directory for "punkt_tab/english"
     expected_dir = os.path.join(nltk_data_dir, "tokenizers", "punkt_tab", "english")
     os.makedirs(expected_dir, exist_ok=True)
-    # Copy english.pickle
+    
+    # Copy the english.pickle file to the expected directory.
     shutil.copy(os.path.join(punkt_dir, "english.pickle"), expected_dir)
-    # Also copy collocations.tab if it exists
-    collocations_path = os.path.join(punkt_dir, "collocations.tab")
-    if os.path.exists(collocations_path):
-        shutil.copy(collocations_path, expected_dir)
-    print("Copied punkt data to expected 'punkt_tab' location.")
+    
+    # Attempt to copy collocations.tab if it exists in the punkt folder.
+    collocations_src = os.path.join(punkt_dir, "collocations.tab")
+    collocations_dest = os.path.join(expected_dir, "collocations.tab")
+    if os.path.exists(collocations_src):
+        shutil.copy(collocations_src, expected_dir)
+    else:
+        # If collocations.tab doesn't exist, create an empty file.
+        with open(collocations_dest, "w", encoding="utf-8") as f:
+            f.write("")
+    print("Punkt data successfully copied to 'punkt_tab' location.")
 except Exception as e:
-    print("Error copying punkt data for punkt_tab workaround:", e)
+    print("Error copying Punkt data for punkt_tab workaround:", e)
 
-
-# Hack: Copy the downloaded Punkt tokenizer to the expected 'punkt_tab' path
-try:
-    # Locate the existing punkt data for English
-    punkt_path = nltk.data.find("tokenizers/punkt/english.pickle")
-    # Define the expected directory for 'punkt_tab'
-    expected_dir = os.path.join(nltk_data_dir, "tokenizers", "punkt_tab", "english")
-    os.makedirs(expected_dir, exist_ok=True)
-    # Copy the english.pickle file to the expected directory
-    dest_file = os.path.join(expected_dir, "english.pickle")
-    shutil.copy(punkt_path, dest_file)
-    # Optionally, copy any other related files if necessary.
-except Exception as e:
-    print("Error copying punkt data for punkt_tab workaround:", e)
 
 
 def create_app():
