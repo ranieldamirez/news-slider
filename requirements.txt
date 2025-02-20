@@ -5,4 +5,4 @@ gunicorn>=22.0.0
 requests>=2.32.0
 pysqlite3
 python-dateutil
-nltk
+nltk>=3.8.1
