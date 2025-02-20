@@ -3,6 +3,7 @@
 from flask import Flask, request, jsonify, render_template
 from models import db, NewsSource, Headline
 from topic_parsing import bp as topics_bp
+from dateutil.parser import parse as date_parse
 
 def create_app():
     """
@@ -69,7 +70,6 @@ def create_app():
 
         return jsonify({"message": "Headline added!", "id": headline.id}), 201
 
-
     @app.route('/headlines', methods=['GET'])
     def get_headlines():
         min_bias = int(request.args.get('min_bias', -10))
@@ -91,22 +91,30 @@ def create_app():
             else:
                 query = query.filter(Headline.title.ilike(f"%{topic}%"))
         
-        # Order by published_at descending (most recent first)
+        # Order by published_at descending
         query = query.order_by(Headline.published_at.desc())
         
         results = []
+
         for headline, source in query.all():
+            # Convert stored published_at to desired format.
+            try:
+                dt = date_parse(headline.published_at)
+                display_date = dt.strftime("%m/%d %I:%M %p")
+            except Exception as e:
+                display_date = headline.published_at
+
             results.append({
                 "id": headline.id,
                 "title": headline.title,
                 "url": headline.url,
                 "source_name": source.name,
                 "bias_score": source.bias_score,
-                "published_at": headline.published_at
+                "published_at": headline.published_at,
+                "display_date": display_date
             })
         
         return jsonify(results)
-
 
     return app
 
@@ -116,7 +124,7 @@ app = create_app() # Expose app at Module level for Render/Gunicorn
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=True, host='0.0.0.0', port=port) # for Render deployment
+    app.run(debug=True, host='0.0.0.0', port=port) # For Render deployment
 
 
 

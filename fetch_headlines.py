@@ -177,16 +177,17 @@ def fetch_headlines_for_source(source_name, source_api_id):
         print(f"Fetched and stored {new_count} new headlines from {source_name}.")
 
 def cleanup_old_articles(db_path='./instance/news.db'):
-    # If the articles are more than 2 days old, delete it from the database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    # Calculatea threshold datetime (two days ago)
-    threshold = datetime.now() - timedelta(days=2)
-    threshold_str = threshold.strftime("%Y-%m-%d %H:%M:%S")
-    # Delete old articles
-    cursor.execute("DELETE FROM headlines WHERE published_at < ?", (threshold_str,))
-    conn.commit()
-    conn.close()
+    app = create_app()
+    with app.app_context():
+        # Calculate threshold: 2 days ago
+        threshold = datetime.now() - timedelta(days=2)
+        threshold_str = threshold.strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Delete all headlines older than threshold using SQLAlchemy
+        deleted = Headline.query.filter(Headline.published_at < threshold_str).delete()
+        db.session.commit()
+        print(f"Deleted {deleted} headlines older than {threshold_str}")
+
 
 if __name__ == "__main__":
     # Step 1: Fetch the list of all NewsAPI sources and store them in DB
