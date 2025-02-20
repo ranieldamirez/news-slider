@@ -22,14 +22,15 @@ def create_app():
     # 2) Initialize SQLAlchemy with the Flask app's settings
     db.init_app(app)
 
-    # Specify a directory for NLTK data that is writable (e.g., /tmp)
+    # Ensure a writable directory for NLTK data exists
     nltk_data_dir = '/tmp/nltk_data'
-    if not os.path.exists(nltk_data_dir):
-        os.makedirs(nltk_data_dir)
-    # Add this directory to nltk data path
+    os.makedirs(nltk_data_dir, exist_ok=True)
+    # Set environment variable (optional but useful)
+    os.environ['NLTK_DATA'] = nltk_data_dir
+    # Add it to nltk data path
     nltk.data.path.append(nltk_data_dir)
-
-    # Download the required NLTK data into the specified directory.
+    
+    # Download required NLTK resources into the specified directory.
     nltk.download('punkt', quiet=True, download_dir=nltk_data_dir)
     nltk.download('stopwords', quiet=True, download_dir=nltk_data_dir)
     nltk.download('averaged_perceptron_tagger', quiet=True, download_dir=nltk_data_dir)
