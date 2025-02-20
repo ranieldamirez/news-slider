@@ -5,13 +5,11 @@ import string
 from collections import defaultdict, Counter
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+import nltk
 from models import Headline, NewsSource
 from models import db  # adjust import based on your project structure
-import nltk
 
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
-nltk.download('averaged_perceptron_tagger', quiet=True)
+
 
 bp = Blueprint('topic_parsing', __name__)
 

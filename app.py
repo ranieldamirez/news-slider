@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, render_template
 from models import db, NewsSource, Headline
 from topic_parsing import bp as topics_bp
 from dateutil.parser import parse as date_parse
+import nltk
 
 def create_app():
     """
@@ -22,6 +23,9 @@ def create_app():
 
     # 3) Create all database tables if they don't already exist
     with app.app_context():
+        nltk.download('punkt', quiet=True)
+        nltk.download('stopwords', quiet=True)
+        nltk.download('averaged_perceptron_tagger_eng', quiet=True)
         db.create_all()
     
     # 4) Define routes
