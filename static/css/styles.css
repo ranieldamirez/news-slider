@@ -1,3 +1,5 @@
+/* styles.css*/
+
 /* Base dark mode styles */
 body {
     background-color: #121212;
@@ -6,89 +8,86 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
-  }
-  
-  .container {
+}
+
+.container {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1rem;
-  }
-  
-  /* Headings */
-  h1 {
+}
+
+/* Headings */
+h1 {
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 2rem;
-  }
-  
-  h2 {
+}
+
+h2 {
     text-align: center;
-  }
-  
-  /* Navigation Bar */
-  nav {
+}
+
+/* Navigation Bar */
+nav {
     text-align: right;
     padding: 1rem;
     background: #1e1e1e;
-  }
-  
-  nav a {
+}
+
+nav a {
     color: #4A90E2;
     text-decoration: none;
     font-weight: bold;
     margin-left: 20px;
-  }
-  
-  nav a:hover {
+}
+
+nav a:hover {
     text-decoration: underline;
-  }
-  
-  /* Links */
-  a {
+}
+
+/* Links */
+a {
     color: #4A90E2;
     text-decoration: none;
-  }
-  
-  a:hover {
+}
+
+a:hover {
     text-decoration: underline;
-  }
-  
-  /* Slider Container */
-  #sliderContainer {
+}
+
+/* Slider Container */
+#sliderContainer {
     margin: 1rem 0;
     text-align: center;
-  }
-  
-  /* Fixed-width classification display */
-  #sliderValue {
+}
+
+/* Fixed-width classification display */
+#sliderValue {
     display: inline-block;
     width: 300px;
     text-align: center;
     font-weight: 600;
     font-size: 1.2rem;
     margin-top: 0.5rem;
-  }
-  
-  /* Styling the slider */
-    /* Remove default appearance for all browsers */
-   input[type="range"] {
+}
+
+/* Styling the slider */
+input[type="range"] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     background: transparent;
     width: 80%;
     margin: 0 auto;
-  }
-  
-  /* WebKit track */
-  input[type="range"]::-webkit-slider-runnable-track {
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
     height: 8px;
     background: #333;
     border-radius: 5px;
-  }
-  
-  /* WebKit thumb */
-  input[type="range"]::-webkit-slider-thumb {
+}
+
+input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 20px;
     width: 20px;
@@ -96,103 +95,139 @@ body {
     background: #fff;
     margin-top: -6px;
     cursor: pointer;
-  }
-  
-  /* Firefox track */
-  input[type="range"]::-moz-range-track {
+}
+
+input[type="range"]::-moz-range-track {
     height: 8px;
     background: #333;
     border-radius: 5px;
-  }
-  
-  /* Firefox thumb */
-  input[type="range"]::-moz-range-thumb {
+}
+
+input[type="range"]::-moz-range-thumb {
     height: 20px;
     width: 20px;
     border: none;
     border-radius: 50%;
     background: #fff;
     cursor: pointer;
-  }
-  
-  /* Optional: IE/Edge styling */
-  input[type="range"]::-ms-track {
+}
+
+input[type="range"]::-ms-track {
     width: 100%;
     cursor: pointer;
     background: transparent;
     border-color: transparent;
     color: transparent;
-  }
-  
-  input[type="range"]::-ms-fill-lower {
+}
+
+input[type="range"]::-ms-fill-lower {
     background: #333;
     border-radius: 5px;
-  }
-  
-  input[type="range"]::-ms-fill-upper {
+}
+
+input[type="range"]::-ms-fill-upper {
     background: #333;
     border-radius: 5px;
-  }
-  
-  input[type="range"]::-ms-thumb {
+}
+
+input[type="range"]::-ms-thumb {
     height: 20px;
     width: 20px;
     border: none;
     border-radius: 50%;
     background: #fff;
     cursor: pointer;
-  }
-  
-  /* Headline card style */
-  .headline-card {
+}
+
+/* Headline card style */
+.headline-card {
     background: #1e1e1e;
     border: 1px solid #333;
     border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .headline-card:hover {
+}
+
+.headline-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  }
-  
-  .card-title {
+}
+
+.card-title {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
-  }
-  
-  .card-subtitle {
+}
+
+.card-subtitle {
     color: #aaa;
     font-size: 0.9rem;
     margin-bottom: 1rem;
-  }
-  
-  /* About Page Specific */
-  .about-content {
+}
+
+/* About Page Specific */
+.about-content {
     margin-top: 2rem;
     font-size: 1.1rem;
     line-height: 1.6;
-  }
-  
-  /* Media Bias Chart image styling */
-  .media-bias-chart {
+}
+
+/* Media Bias Chart image styling */
+.media-bias-chart {
     display: block;
     margin: 2rem auto;
-    max-width: 200%;
-    width: 100%;  /* Adjust this value to increase/decrease image width */
-  }
-  
-  .media-figure {
+    max-width: 100%;
+    width: 100%;  /* Adjust width as needed */
+}
+
+.media-figure {
     text-align: center;
     margin: 2rem auto;
-  }
-  
-  .media-figure figcaption {
+}
+
+.media-figure figcaption {
     font-size: 0.9rem;
     color: #aaa;
     margin-top: 0.5rem;
+}
+
+/* Topic Buttons Container */
+.topic-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+    background-color: #1e1e1e;
+    margin-bottom: 1rem;
+    min-height: 30px;      /* Increased height */
+    padding-bottom: 1.5rem; /* Extra bottom padding */
   }
   
+  /* Topic Buttons */
+  .topic-button {
+    margin: 0 5px;
+    padding: 0.5rem 1rem;
+    background-color: #1e1e1e;
+    color: #4A90E2;
+    border: 1px solid #4A90E2;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  
+  .topic-button:hover {
+    background-color: #333;
+  }
+  
+  /* Visual cue for the selected topic */
+  .topic-button.selected {
+    background-color: #333;
+    border-color: #333;
+  }
+  
+  /* Different styling for the reset button */
+  .topic-button.reset-button {
+    font-style: italic;
+  }

@@ -2,12 +2,14 @@
 
 from flask import Flask, request, jsonify, render_template
 from models import db, NewsSource, Headline
+from topic_parsing import bp as topics_bp
 
 def create_app():
     """
     A factory function that creates our Flask app, configures the DB, and defines our endpoints (routes).
     """
     app = Flask(__name__)
+    app.register_blueprint(topics_bp) # Set the topic blueprint
 
     # 1) Tell Flask-SQLAlchemy which database to use.
     # Here, we use a SQLite file called 'news.db'.
@@ -70,35 +72,42 @@ def create_app():
 
     @app.route('/headlines', methods=['GET'])
     def get_headlines():
-        """
-        Returns a list of headlines (optionally filtered by a bias range).
-        Example query params:
-        /headlines?min_bias=5&max_bias=5
-        """
-
-        # If no values provided, default to -10 / +10
         min_bias = int(request.args.get('min_bias', -10))
         max_bias = int(request.args.get('max_bias', 10))
+        topic = request.args.get('topic', None)
 
-        # Query all headlines joined with their news source
-        # then filter by the source's bias_score
         query = db.session.query(Headline, NewsSource).join(NewsSource).filter(
             NewsSource.bias_score >= min_bias,
             NewsSource.bias_score <= max_bias
         )
 
+        if topic:
+            if topic == "Misc":
+                from topic_parsing import extract_topics
+                all_topics = extract_topics()
+                popular = all_topics[:15]
+                for token in popular:
+                    query = query.filter(~Headline.title.ilike(f"%{token}%"))
+            else:
+                query = query.filter(Headline.title.ilike(f"%{topic}%"))
+        
+        # Order by published_at descending (most recent first)
+        query = query.order_by(Headline.published_at.desc())
+        
         results = []
-
         for headline, source in query.all():
             results.append({
-                "id":  headline.id,
+                "id": headline.id,
                 "title": headline.title,
                 "url": headline.url,
                 "source_name": source.name,
-                "bias_score": source.bias_score
+                "bias_score": source.bias_score,
+                "published_at": headline.published_at
             })
-
+        
         return jsonify(results)
+
+
     return app
 
 app = create_app() # Expose app at Module level for Render/Gunicorn
