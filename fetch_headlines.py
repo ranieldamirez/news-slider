@@ -3,6 +3,9 @@
 import os
 import requests
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
+from dateutil.parser import parse
+import sqlite3
 
 from app import create_app
 from models import db, NewsSource, Headline
@@ -15,8 +18,7 @@ API_KEY = os.environ.get("NEWSAPI_KEY")
 # (-5, -2) : Lean Left
 # (-1, +1) : Centrist / Minimal partisan
 # (+2, +5) : Lean Right
-# (+6, +10) : Strongly Right
-
+# (+6, +10) : Strongly Rights
 bias_overrides = {
     "MSNBC": -7,
     "The Huffington Post": -6,
@@ -147,6 +149,14 @@ def fetch_headlines_for_source(source_name, source_api_id):
         for article in articles:
             title = article.get("title")
             article_url = article.get("url")
+            published_at_raw = article.get("publishedAt")  # e.g. from API, "2025-02-19T18:12:00Z"
+
+            try:
+                dt = parse(published_at_raw)  # Automatically handles extra fractional digits.
+                published_at = dt.strftime("%Y-%m-%d %H:%M:%S")
+            except Exception as e:
+                print(f"Error parsing publishedAt for article '{title}': {e}")
+                continue
 
             # Check for duplicates by title + url
             existing = Headline.query.filter_by(title=title, url=article_url).first()
@@ -157,7 +167,8 @@ def fetch_headlines_for_source(source_name, source_api_id):
             new_headline = Headline(
                 source_id=db_source.id,
                 title=title or "No Title",
-                url=article_url or "No URL"
+                url=article_url or "No URL",
+                published_at=published_at
             )
             db.session.add(new_headline)
             new_count += 1
@@ -165,11 +176,26 @@ def fetch_headlines_for_source(source_name, source_api_id):
         db.session.commit()
         print(f"Fetched and stored {new_count} new headlines from {source_name}.")
 
+def cleanup_old_articles(db_path='./instance/news.db'):
+    # If the articles are more than 2 days old, delete it from the database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    # Calculatea threshold datetime (two days ago)
+    threshold = datetime.now() - timedelta(days=2)
+    threshold_str = threshold.strftime("%Y-%m-%d %H:%M:%S")
+    # Delete old articles
+    cursor.execute("DELETE FROM headlines WHERE published_at < ?", (threshold_str,))
+    conn.commit()
+    conn.close()
+
 if __name__ == "__main__":
     # Step 1: Fetch the list of all NewsAPI sources and store them in DB
     #         with a default bias score of 0.  (You could also do custom logic 
     #         if you know certain sources are more liberal/conservative.)
     all_sources = fetch_us_sources_and_store(default_bias=0)
+
+    # Delete old headlines (2 days old)
+    cleanup_old_articles()
 
     # Step 2: For each source, fetch the top headlines
     # WARNING: This could be 70+ requests. Might exceed free-tier NewsAPI limit.

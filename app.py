@@ -27,6 +27,10 @@ def create_app():
     def home():
         return render_template('index.html')
     
+    @app.route('/about')
+    def about():
+        return render_template('about.html')
+    
     @app.route('/add_source', methods=['POST'])
     def add_source():
         """

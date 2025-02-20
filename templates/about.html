@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>About - News-Slider</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+  </nav>
+
+  <div class="container">
+    <h1>About News-Slider</h1>
+    <div class="about-content">
+      <h2>What is News-Slider?</h2>
+      <p>
+        News-Slider aggregates news headlines from a variety of sources and assigns each a bias score on a scale from -10 (most left) to +10 (most right). 
+        These scores are derived from a synthesis of established media bias charts, including graphics from Ad Fontes Media (seen below) and other independent assessments.
+      </p>
+      <p>
+        The goal is to promote transparency and media literacy by allowing users to quickly see the political leanings of different outlets, 
+        empowering them to make more informed decisions about the news they consume.
+      </p>
+      <p>
+        By visualizing bias in a quantitative manner, News-Slider provides a unique perspective on today’s news ecosystem.
+      </p>
+      <figure class="media-figure">
+        <img src="{{ url_for('static', filename='Media-Bias-Chart.jpg') }}" alt="Media Bias Chart" class="media-bias-chart">
+        <figcaption>
+          Media Bias Chart -
+          <a href="https://adfontesmedia.com/gallery/" target="_blank">SOURCE</a>
+        </figcaption>
+      </figure>      
+    </div>
+  </div>
+</body>
+</html>

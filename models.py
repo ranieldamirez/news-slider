@@ -38,5 +38,8 @@ class Headline(db.Model):
     # A foreign key linking this headline to a specific NewsSource
     source_id = db.Column(db.Integer, db.ForeignKey('news_sources.id'), nullable=False)
 
+    # Stores artiocle publish data
+    published_at = db.Column(db.String(50), nullable=False)
+
     # Relationship so we can easily access the NewsSource data from a Headline object
     source = db.relationship('NewsSource', backref='headlines')
