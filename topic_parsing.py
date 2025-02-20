@@ -3,7 +3,6 @@
 from flask import Blueprint, jsonify, request
 import string
 from collections import defaultdict, Counter
-from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import nltk
 from models import Headline, NewsSource
@@ -14,7 +13,7 @@ from models import db  # adjust import based on your project structure
 bp = Blueprint('topic_parsing', __name__)
 
 
-STOPWORDS = set(stopwords.words('english'))
+
 
 def bucket_bias(bias_score):
     """Categorize a bias score into a bias bucket."""
@@ -30,6 +29,8 @@ def bucket_bias(bias_score):
         return 'Strongly Right'
 
 def extract_topics():
+    from nltk.corpus import stopwords
+    STOPWORDS = set(stopwords.words('english'))
     """
     Extract topics from current headlines.
     Only include tokens that are proper nouns (NNP/NNPS), appear in at least 3 different bias buckets,
