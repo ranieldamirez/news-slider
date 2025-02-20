@@ -5,6 +5,7 @@ from models import db, NewsSource, Headline
 from topic_parsing import bp as topics_bp
 from dateutil.parser import parse as date_parse
 import os
+import shutil
 import nltk
 
 # Ensure a writable directory for NLTK data exists
@@ -19,6 +20,20 @@ nltk.data.path.append(nltk_data_dir)
 nltk.download('punkt', quiet=True, download_dir=nltk_data_dir)
 nltk.download('stopwords', quiet=True, download_dir=nltk_data_dir)
 nltk.download('averaged_perceptron_tagger', quiet=True, download_dir=nltk_data_dir)
+
+# Hack: Copy the downloaded Punkt tokenizer to the expected 'punkt_tab' path
+try:
+    # Locate the existing punkt data for English
+    punkt_path = nltk.data.find("tokenizers/punkt/english.pickle")
+    # Define the expected directory for 'punkt_tab'
+    expected_dir = os.path.join(nltk_data_dir, "tokenizers", "punkt_tab", "english")
+    os.makedirs(expected_dir, exist_ok=True)
+    # Copy the english.pickle file to the expected directory
+    dest_file = os.path.join(expected_dir, "english.pickle")
+    shutil.copy(punkt_path, dest_file)
+    # Optionally, copy any other related files if necessary.
+except Exception as e:
+    print("Error copying punkt data for punkt_tab workaround:", e)
 
 
 def create_app():
