@@ -16,7 +16,7 @@ if nltk_data_dir not in nltk.data.path:
     nltk.data.path.append(nltk_data_dir)
 
 # Download required NLTK resources into that directory.
-nltk.download('punkt', quiet=True, download_dir=nltk_data_dir)
+nltk.download('punkt_tab', quiet=True, download_dir=nltk_data_dir)
 nltk.download('stopwords', quiet=True, download_dir=nltk_data_dir)
 nltk.download('averaged_perceptron_tagger', quiet=True, download_dir=nltk_data_dir)
 
