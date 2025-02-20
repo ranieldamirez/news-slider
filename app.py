@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, render_template
 from models import db, NewsSource, Headline
 from topic_parsing import bp as topics_bp
 from dateutil.parser import parse as date_parse
+import os
 import nltk
 
 def create_app():
@@ -21,11 +22,20 @@ def create_app():
     # 2) Initialize SQLAlchemy with the Flask app's settings
     db.init_app(app)
 
+    # Specify a directory for NLTK data that is writable (e.g., /tmp)
+    nltk_data_dir = '/tmp/nltk_data'
+    if not os.path.exists(nltk_data_dir):
+        os.makedirs(nltk_data_dir)
+    # Add this directory to nltk data path
+    nltk.data.path.append(nltk_data_dir)
+
+    # Download the required NLTK data into the specified directory.
+    nltk.download('punkt', quiet=True, download_dir=nltk_data_dir)
+    nltk.download('stopwords', quiet=True, download_dir=nltk_data_dir)
+    nltk.download('averaged_perceptron_tagger', quiet=True, download_dir=nltk_data_dir)
+
     # 3) Create all database tables if they don't already exist
     with app.app_context():
-        nltk.download('punkt', quiet=True)
-        nltk.download('stopwords', quiet=True)
-        nltk.download('averaged_perceptron_tagger_eng', quiet=True)
         db.create_all()
     
     # 4) Define routes
