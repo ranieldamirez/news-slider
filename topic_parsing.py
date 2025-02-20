@@ -10,10 +10,7 @@ from models import db  # adjust import based on your project structure
 
 bp = Blueprint('topic_parsing', __name__)
 
-# Ensure NLTK stopwords are downloaded; you might run this once in your setup.
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
+
 
 STOPWORDS = set(stopwords.words('english'))
 
@@ -37,13 +34,12 @@ def extract_topics():
     and occur at least 3 times overall.
     Additionally, filter out common noise words.
     """
-    try:
-        import nltk
-        nltk.download('punkt', quiet=True)
-        nltk.download('stopwords', quiet=True)
-        nltk.download('averaged_perceptron_tagger_eng', quiet=True)
-    except Exception as e:
-        print("Error downloading NLTK data:", e)
+    
+    import nltk
+    nltk.download('punkt', quiet=True)
+    nltk.download('stopwords', quiet=True)
+    nltk.download('averaged_perceptron_tagger_eng', quiet=True)
+
     
     headlines = Headline.query.all()
     token_buckets = defaultdict(set)
