@@ -18,71 +18,13 @@
     </div>
     <div id="sliderContainer">
       <label for="biasSlider">Political Leaning:</label><br>
-      <input type="range" id="biasSlider" min="-10" max="10" value="0" step="1">
+      <input type="range" id="biasSlider" min="0" max="4" value="2" step="1">
       <div id="sliderValue">Centrist / Minimal partisan</div>
     </div>
+    <div id="topic-buttons" class="topic-container"></div>
     <div id="headlines"></div>
   </div>
 
-  <script>
-    const slider = document.getElementById('biasSlider');
-    const sliderValue = document.getElementById('sliderValue');
-    const headlinesDiv = document.getElementById('headlines');
-
-    // Convert slider value into political classification.
-    function getPoliticalClassification(value) {
-      if (value >= -10 && value <= -6) {
-          return "Strongly Left";
-      } else if (value >= -5 && value <= -2) {
-          return "Lean Left";
-      } else if (value >= -1 && value <= 1) {
-          return "Centrist / Minimal partisan";
-      } else if (value >= 2 && value <= 5) {
-          return "Lean Right";
-      } else if (value >= 6 && value <= 10) {
-          return "Strongly Right";
-      }
-      return "";
-    }
-
-    // Fetch headlines from your Flask endpoint.
-    function fetchHeadlines(bias) {
-      // Use a window of ±2 for filtering
-      const min_bias = bias - 2;
-      const max_bias = bias + 2;
-      fetch(`/headlines?min_bias=${min_bias}&max_bias=${max_bias}`)
-        .then(response => response.json())
-        .then(data => {
-          headlinesDiv.innerHTML = '';
-          data.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'headline-card';
-            card.innerHTML = `
-              <div class="card-title">${item.title}</div>
-              <div class="card-subtitle">${item.source_name} (Bias: ${item.bias_score})</div>
-              <a href="${item.url}" target="_blank">Read more</a>
-            `;
-            headlinesDiv.appendChild(card);
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching headlines:', error);
-        });
-    }
-
-    // Update classification and headlines on slider change.
-    slider.addEventListener('input', (e) => {
-      const bias = parseInt(e.target.value);
-      sliderValue.textContent = getPoliticalClassification(bias);
-      fetchHeadlines(bias);
-    });
-
-    // On page load, set initial classification and fetch headlines.
-    window.onload = () => {
-      const initialBias = parseInt(slider.value);
-      sliderValue.textContent = getPoliticalClassification(initialBias);
-      fetchHeadlines(initialBias);
-    };
-  </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
