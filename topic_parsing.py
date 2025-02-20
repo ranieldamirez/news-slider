@@ -37,8 +37,13 @@ def extract_topics():
     and occur at least 3 times overall.
     Additionally, filter out common noise words.
     """
-    import nltk
-    nltk.download('averaged_perceptron_tagger', quiet=True)
+    try:
+        import nltk
+        nltk.download('punkt', quiet=True)
+        nltk.download('stopwords', quiet=True)
+        nltk.download('averaged_perceptron_tagger_eng', quiet=True)
+    except Exception as e:
+        print("Error downloading NLTK data:", e)
     
     headlines = Headline.query.all()
     token_buckets = defaultdict(set)
