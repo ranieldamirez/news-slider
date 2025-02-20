@@ -7,6 +7,20 @@ from dateutil.parser import parse as date_parse
 import os
 import nltk
 
+# Ensure a writable directory for NLTK data exists
+nltk_data_dir = '/tmp/nltk_data'
+os.makedirs(nltk_data_dir, exist_ok=True)
+# Set environment variable (optional but useful)
+os.environ['NLTK_DATA'] = nltk_data_dir
+# Add it to nltk data path
+nltk.data.path.append(nltk_data_dir)
+
+# Download required NLTK resources into the specified directory.
+nltk.download('punkt', quiet=True, download_dir=nltk_data_dir)
+nltk.download('stopwords', quiet=True, download_dir=nltk_data_dir)
+nltk.download('averaged_perceptron_tagger', quiet=True, download_dir=nltk_data_dir)
+
+
 def create_app():
     """
     A factory function that creates our Flask app, configures the DB, and defines our endpoints (routes).
@@ -22,18 +36,7 @@ def create_app():
     # 2) Initialize SQLAlchemy with the Flask app's settings
     db.init_app(app)
 
-    # Ensure a writable directory for NLTK data exists
-    nltk_data_dir = '/tmp/nltk_data'
-    os.makedirs(nltk_data_dir, exist_ok=True)
-    # Set environment variable (optional but useful)
-    os.environ['NLTK_DATA'] = nltk_data_dir
-    # Add it to nltk data path
-    nltk.data.path.append(nltk_data_dir)
-    
-    # Download required NLTK resources into the specified directory.
-    nltk.download('punkt', quiet=True, download_dir=nltk_data_dir)
-    nltk.download('stopwords', quiet=True, download_dir=nltk_data_dir)
-    nltk.download('averaged_perceptron_tagger', quiet=True, download_dir=nltk_data_dir)
+
 
     # 3) Create all database tables if they don't already exist
     with app.app_context():
