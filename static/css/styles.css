@@ -70,19 +70,24 @@ body {
   }
   
   /* Styling the slider */
-  input[type="range"] {
+    /* Remove default appearance for all browsers */
+   input[type="range"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
     width: 80%;
     margin: 0 auto;
-    -webkit-appearance: none;
-    background: transparent;
   }
   
+  /* WebKit track */
   input[type="range"]::-webkit-slider-runnable-track {
     height: 8px;
     background: #333;
     border-radius: 5px;
   }
   
+  /* WebKit thumb */
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 20px;
@@ -90,6 +95,51 @@ body {
     border-radius: 50%;
     background: #fff;
     margin-top: -6px;
+    cursor: pointer;
+  }
+  
+  /* Firefox track */
+  input[type="range"]::-moz-range-track {
+    height: 8px;
+    background: #333;
+    border-radius: 5px;
+  }
+  
+  /* Firefox thumb */
+  input[type="range"]::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+  }
+  
+  /* Optional: IE/Edge styling */
+  input[type="range"]::-ms-track {
+    width: 100%;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+  
+  input[type="range"]::-ms-fill-lower {
+    background: #333;
+    border-radius: 5px;
+  }
+  
+  input[type="range"]::-ms-fill-upper {
+    background: #333;
+    border-radius: 5px;
+  }
+  
+  input[type="range"]::-ms-thumb {
+    height: 20px;
+    width: 20px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
     cursor: pointer;
   }
   
