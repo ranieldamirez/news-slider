@@ -43,7 +43,7 @@ function fetchHeadlines(index, topic = null) {
           <div class="card-title">${item.title}</div>
           <div class="card-subtitle">${item.source_name} (Bias: ${item.bias_score})</div>
           <a href="${item.url}" target="_blank">Read more</a>
-          <div class="card-date">${item.display_date}</div>
+          <div class="card-date">${item.display_date || '-'}</div>
         `;
         headlinesDiv.appendChild(card);
       });
