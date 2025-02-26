@@ -16,7 +16,7 @@ jobs:
       - name: Make a dummy commit
         run: |
           date > dummy.txt
-          git config --global user.email "your-email@example.com"
+          git config --global user.email "danielramirezarb@gmail.com"
           git config --global user.name "GitHub Action Bot"
           git add dummy.txt
           git commit -m "Automated dummy commit $(date)"
