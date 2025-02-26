@@ -238,3 +238,16 @@ input[type="range"]::-ms-thumb {
   .topic-button.reset-button {
     font-style: italic;
   }
+
+  /* disclaimer in the top left */
+  .disclaimer{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #E0E0E0;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    z-index: 1000; /* format text on top of existing elements */
+  }
+  
