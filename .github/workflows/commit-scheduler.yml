@@ -1,0 +1,23 @@
+name: Daily Headline Refresh Commit
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Runs every 24 hours at 06:00 UTC
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make a dummy commit
+        run: |
+          date > dummy.txt
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "GitHub Action Bot"
+          git add dummy.txt
+          git commit -m "Automated dummy commit $(date)"
+          git push
