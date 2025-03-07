@@ -6,23 +6,32 @@ on:
   workflow_dispatch: # Allows manual trigger
 
 jobs:
-  commit:
+  run_and_commit:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt  # If dependencies exist
+
+      - name: Run fetch_headlines.py
+        run: python fetch_headlines.py
 
       - name: Configure Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Action Bot"
 
-      - name: Make a dummy commit
+      - name: Commit changes
         run: |
-          date > dummy.txt
-          git add dummy.txt
-          git commit -m "Automated dummy commit $(date)" || echo "No changes to commit"
+          git add .
+          git commit -m "Automated update: Daily Headline Refresh $(date)" || echo "No changes to commit"
 
       - name: Push changes
         env:
@@ -30,4 +39,3 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${GH_PAT}@github.com/ranieldamirez/news-slider.git
           git push origin main
-
